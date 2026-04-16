@@ -231,18 +231,18 @@ footer { text-align: center; font-size: 0.72rem; color: var(--hint); padding: 1.
 <div id="tab-grafik" class="tab-panel">
 
   <div class="chart-controls">
-    <div class="sec-label">Parameter</div>
+    <div class="sec-label">Parameter (aus Rechner übernommen)</div>
     <div class="chart-row">
-      <div class="chart-lbl">Beerdigungskosten<small>Verschiebt den Sprungpunkt</small></div>
-      <div class="field-inp"><span class="pfx">CHF</span><input type="number" id="g-beerd" value="20000" min="0" step="1000" oninput="drawChart()"></div>
+      <div class="chart-lbl">Beerdigungskosten<small>Aus Schritt 1 des Rechners</small></div>
+      <div class="field-inp"><span class="pfx">CHF</span><input type="number" id="g-beerd" value="20000" readonly style="opacity:0.6;cursor:default;"></div>
     </div>
     <div class="chart-row">
-      <div class="chart-lbl">Weitere Schulden</div>
-      <div class="field-inp"><span class="pfx">CHF</span><input type="number" id="g-schulden" value="0" min="0" step="1000" oninput="drawChart()"></div>
+      <div class="chart-lbl">Weitere Schulden<small>Aus Schritt 1 des Rechners</small></div>
+      <div class="field-inp"><span class="pfx">CHF</span><input type="number" id="g-schulden" value="0" readonly style="opacity:0.6;cursor:default;"></div>
     </div>
     <div class="chart-row">
-      <div class="chart-lbl">Verpflichtung ggü. Kindern (Ziff. 2.4)</div>
-      <div class="field-inp"><span class="pfx">CHF</span><input type="number" id="g-verpfl" value="127500" min="0" step="500" oninput="drawChart()"></div>
+      <div class="chart-lbl">Verpflichtung ggü. Kindern<small>Aus Schritt 1 des Rechners</small></div>
+      <div class="field-inp"><span class="pfx">CHF</span><input type="number" id="g-verpfl" value="127500" readonly style="opacity:0.6;cursor:default;"></div>
     </div>
     <div class="chart-row">
       <div class="chart-lbl">Kontostand x-Achse bis</div>
@@ -437,10 +437,13 @@ function berechne(konto, beerd, schulden, verpfl, pos) {
 }
 
 function drawChart() {
-  const beerd    = +document.getElementById('g-beerd').value   || 0;
-  const schulden = +document.getElementById('g-schulden').value || 0;
-  const verpfl   = +document.getElementById('g-verpfl').value  || 0;
-  const maxK     = +document.getElementById('g-max').value     || 300000;
+  const beerd    = +document.getElementById('beerdigung').value || 0;
+  const schulden = +document.getElementById('schulden').value   || 0;
+  const verpfl   = +document.getElementById('verpfl').value     || 0;
+  const maxK     = +document.getElementById('g-max').value      || 300000;
+  document.getElementById('g-beerd').value    = beerd;
+  document.getElementById('g-schulden').value = schulden;
+  document.getElementById('g-verpfl').value   = verpfl;
 
   // Sprungpunkt: wenn nachB = verpfl → konto = beerd + schulden + verpfl
   const sprung   = beerd + schulden + verpfl;
@@ -481,7 +484,8 @@ function drawChart() {
   document.getElementById('chart-info').innerHTML =
     'Sprungpunkt: CHF\u202f' + sprung.toLocaleString('de-CH') +
     ' | Tochter springt von ' + fmtTip(rUnten.tochter) + ' auf ' + fmtTip(rOben.tochter) +
-    ' | Sohn springt von ' + fmtTip(rUnten.sohn) + ' auf ' + fmtTip(rOben.sohn);
+    ' | Sohn springt von ' + fmtTip(rUnten.sohn) + ' auf ' + fmtTip(rOben.sohn) +
+    ' | Rechts vom Sprung: Kurven deckungsgleich (alle erhalten gleich viel)';
 
   if (chartInst) { chartInst.destroy(); chartInst = null; }
 
@@ -528,10 +532,10 @@ function drawChart() {
     data: {
       labels: labelsArr,
       datasets: [
-        { label: 'Tochter', data: tochterArr, borderColor: '#1D9E75', backgroundColor: 'transparent',
-          borderWidth: 2, pointRadius: 0, pointHoverRadius: 4, tension: 0, spanGaps: false },
         { label: 'Sohn (je)', data: sohnArr, borderColor: '#378ADD', backgroundColor: 'transparent',
-          borderWidth: 2, borderDash: [6,3], pointRadius: 0, pointHoverRadius: 4, tension: 0, spanGaps: false }
+          borderWidth: 2.5, borderDash: [7,4], pointRadius: 0, pointHoverRadius: 4, tension: 0, spanGaps: false, order: 2 },
+        { label: 'Tochter', data: tochterArr, borderColor: '#1D9E75', backgroundColor: 'transparent',
+          borderWidth: 2, pointRadius: 0, pointHoverRadius: 4, tension: 0, spanGaps: false, order: 1 }
       ]
     },
     options: {
@@ -560,7 +564,7 @@ function drawChart() {
             color: ctx => ctx.tick.value === 0 ? 'rgba(0,0,0,0.2)' : 'rgba(0,0,0,0.05)',
             lineWidth: ctx => ctx.tick.value === 0 ? 1.5 : 1
           },
-          title: { display: true, text: 'Gesamtergebnis pro Kind', font: { size: 12 }, color: '#7A776E' }
+          title: { display: true, text: 'Gesamtergebnis (Tochter / Sohn)', font: { size: 12 }, color: '#7A776E' }
         }
       }
     },
@@ -570,6 +574,16 @@ function drawChart() {
 
 // Init
 calc();
+
+// Redraw chart when rechner inputs change and grafik tab is active
+function calcAndDraw() {
+  calc();
+  if (document.getElementById('tab-grafik').classList.contains('active')) drawChart();
+}
+// Attach calcAndDraw to all rechner inputs
+document.querySelectorAll('#tab-rechner input').forEach(inp => {
+  inp.oninput = calcAndDraw;
+});
 </script>
 </body>
 </html>
