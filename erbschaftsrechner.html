@@ -1,0 +1,213 @@
+
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+.wrap { padding: 1rem 0; }
+.sec { background: var(--color-background-primary); border: 0.5px solid var(--color-border-tertiary); border-radius: var(--border-radius-lg); padding: 1rem 1.25rem; margin-bottom: 1rem; }
+.sec-b { background: var(--color-background-primary); border: 2px solid var(--color-border-warning); border-radius: var(--border-radius-lg); padding: 1rem 1.25rem; margin-bottom: 1rem; }
+.sec-pb { background: var(--color-background-primary); border: 2px solid var(--color-border-info); border-radius: var(--border-radius-lg); padding: 1rem 1.25rem; margin-bottom: 1rem; }
+.sec-pb-off { background: var(--color-background-secondary); border: 0.5px solid var(--color-border-tertiary); border-radius: var(--border-radius-lg); padding: 1rem 1.25rem; margin-bottom: 1rem; opacity:0.6; }
+.ttl { font-size: 13px; font-weight: 500; color: var(--color-text-secondary); text-transform: uppercase; letter-spacing: .05em; margin-bottom: 12px; }
+.row { display: flex; align-items: center; gap: 12px; margin-bottom: 10px; }
+.lbl { font-size: 14px; color: var(--color-text-primary); flex: 1; min-width: 0; }
+.lbl small { display: block; font-size: 12px; color: var(--color-text-secondary); }
+.inp { display: flex; align-items: center; gap: 6px; }
+.inp span { font-size: 13px; color: var(--color-text-secondary); }
+input[type=number] { width: 130px; font-size: 14px; }
+input[type=text] { width: 130px; font-size: 14px; }
+.step { border-left: 2px solid var(--color-border-secondary); padding-left: 12px; margin-bottom: 10px; }
+.sl { font-size: 12px; color: var(--color-text-secondary); margin-bottom: 2px; }
+.sv { font-size: 15px; font-weight: 500; color: var(--color-text-primary); }
+.se { font-size: 12px; color: var(--color-text-tertiary); margin-top: 2px; }
+.grid3 { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 10px; }
+.grid2 { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 10px; }
+.card { background: var(--color-background-secondary); border-radius: var(--border-radius-md); padding: 12px; text-align: center; }
+.cn { font-size: 12px; color: var(--color-text-secondary); margin-bottom: 4px; }
+.ca { font-size: 20px; font-weight: 500; color: var(--color-text-primary); }
+.cd { font-size: 11px; color: var(--color-text-tertiary); margin-top: 4px; }
+.cdw { font-size: 11px; color: var(--color-text-warning); margin-top: 4px; }
+.info { background: var(--color-background-info); border: 0.5px solid var(--color-border-info); border-radius: var(--border-radius-md); padding: 10px 14px; font-size: 13px; color: var(--color-text-info); margin-bottom: 1rem; }
+.ok { background: var(--color-background-success); border: 0.5px solid var(--color-border-success); border-radius: var(--border-radius-md); padding: 10px 14px; font-size: 13px; color: var(--color-text-success); }
+.warn { background: var(--color-background-warning); border: 0.5px solid var(--color-border-warning); border-radius: var(--border-radius-md); padding: 10px 14px; font-size: 13px; color: var(--color-text-warning); }
+.tr { display: flex; justify-content: space-between; align-items: baseline; padding: 4px 0; }
+.tl { font-size: 14px; color: var(--color-text-secondary); }
+.tv { font-size: 14px; font-weight: 500; color: var(--color-text-primary); }
+.big .tl { font-size: 15px; color: var(--color-text-primary); font-weight: 500; }
+.big .tv { font-size: 17px; }
+.hb { display: inline-block; font-size: 11px; padding: 2px 8px; border-radius: var(--border-radius-md); background: var(--color-background-success); color: var(--color-text-success); margin-left: 4px; }
+.ta { display: inline-block; font-size: 11px; padding: 2px 8px; border-radius: var(--border-radius-md); background: var(--color-background-info); color: var(--color-text-info); margin-left: 4px; }
+.ti { display: inline-block; font-size: 11px; padding: 2px 8px; border-radius: var(--border-radius-md); background: var(--color-background-secondary); color: var(--color-text-secondary); margin-left: 4px; }
+hr.div { border: none; border-top: 0.5px solid var(--color-border-tertiary); margin: 10px 0; }
+@media(max-width:480px){ .grid3,.grid2{ grid-template-columns:1fr; } }
+</style>
+
+<div class="wrap">
+
+<div class="sec">
+  <div class="ttl">Schritt 1 — Nachlass beim Tod</div>
+  <div class="row"><div class="lbl">Kontostand beim Tod</div><div class="inp"><span>CHF</span><input type="number" id="konto" value="0" min="0" step="1000" oninput="calc()"></div></div>
+  <div class="row"><div class="lbl">Weitere Aktiven<small>Wertschriften, Fahrzeug etc.</small></div><div class="inp"><span>CHF</span><input type="number" id="aktiven" value="0" min="0" step="1000" oninput="calc()"></div></div>
+  <div class="row"><div class="lbl">Beerdigungskosten<small>Vorweg vom Nachlass getragen (Art. 474 ZGB)</small></div><div class="inp"><span>CHF</span><input type="number" id="beerdigung" value="20000" min="0" step="1000" oninput="calc()"></div></div>
+  <div class="row"><div class="lbl">Weitere Schulden / Passiven</div><div class="inp"><span>CHF</span><input type="number" id="schulden" value="0" min="0" step="1000" oninput="calc()"></div></div>
+  <div class="row"><div class="lbl">Verpflichtung ggü. Kindern (Ziff. 2.4)<small>Nachlassschuld — wird voll abgezogen</small></div><div class="inp"><span>CHF</span><input type="number" id="verpfl" value="127500" min="0" step="500" oninput="calc()"></div></div>
+</div>
+
+<div class="sec">
+  <div class="ttl">Schritt 2 — Namen der Kinder</div>
+  <div class="row"><div class="lbl">Tochter <span class="hb">Haus bereits erworben</span></div><div class="inp"><input type="text" id="nT" value="Tochter" oninput="calc()"></div></div>
+  <div class="row"><div class="lbl">Sohn 1</div><div class="inp"><input type="text" id="nS1" value="Sohn 1" oninput="calc()"></div></div>
+  <div class="row"><div class="lbl">Sohn 2</div><div class="inp"><input type="text" id="nS2" value="Sohn 2" oninput="calc()"></div></div>
+</div>
+
+<div class="sec">
+  <div class="ttl">Schritt 3 — Berechnung Szenario A (alle drei erben)</div>
+  <div id="rechnungA"></div>
+</div>
+
+<div class="sec">
+  <div class="ttl">Ergebnis Szenario A — Barauszahlung pro Kind aus Nachlass</div>
+  <div class="grid3" id="cardsA"></div>
+  <div id="statusA" style="margin-top:1rem;"></div>
+</div>
+
+<div id="pbSek"></div>
+
+<div class="sec">
+  <div class="ttl">Gesamtergebnis Szenario A — alle drei erben</div>
+  <div class="grid3" id="totalA"></div>
+</div>
+
+<div class="sec-b">
+  <div class="ttl">Szenario B — Tochter schlägt Erbe aus</div>
+  <div id="rechnungB"></div>
+  <div class="grid2" id="cardsB" style="margin-top:1rem;"></div>
+</div>
+
+</div>
+
+<script>
+function f(n) {
+  return (n < 0 ? '−' : '') + 'CHF ' + Math.abs(Math.round(n)).toLocaleString('de-CH');
+}
+
+function calc() {
+  const konto     = +document.getElementById('konto').value || 0;
+  const aktiven   = +document.getElementById('aktiven').value || 0;
+  const beerd     = +document.getElementById('beerdigung').value || 0;
+  const schulden  = +document.getElementById('schulden').value || 0;
+  const verpfl    = +document.getElementById('verpfl').value || 0;
+  const nT        = document.getElementById('nT').value || 'Tochter';
+  const nS1       = document.getElementById('nS1').value || 'Sohn 1';
+  const nS2       = document.getElementById('nS2').value || 'Sohn 2';
+
+  // === SZENARIO A ===
+  const brutto    = konto + aktiven;
+  const nachB     = brutto - beerd - schulden;
+  const reiner    = nachB - verpfl;
+  const pos       = reiner >= 0;
+  const vAusbez   = Math.min(verpfl, Math.max(0, nachB));
+  const vFehlt    = verpfl - vAusbez;
+  const vPK       = vAusbez / 3;
+  const vSollPK   = verpfl / 3;
+  const fPK       = vFehlt / 3;
+  const drittel   = Math.max(0, reiner) / 3;
+
+  document.getElementById('rechnungA').innerHTML =
+    step('Kontostand + weitere Aktiven', f(brutto)) +
+    step('./. Beerdigungskosten (Art. 474 ZGB)', '− ' + f(beerd), 'Vorweg vom Nachlass getragen') +
+    step('./. Weitere Schulden', '− ' + f(schulden)) +
+    step('./. Verpflichtung ggü. Kindern (Ziff. 2.4)', '− ' + f(verpfl),
+      vFehlt > 0
+        ? 'Nachlassmittel decken nur ' + f(vAusbez) + ' — Fehlbetrag ' + f(vFehlt)
+        : 'Je Kind: ' + f(vPK)) +
+    '<hr class="div">' +
+    tr('Reiner Nachlass', f(reiner), true) +
+    tr('Erbteil je Kind (1/3)', f(drittel)) +
+    '<p style="font-size:12px;color:var(--color-text-tertiary);margin-top:8px;">Nachlass positiv wenn Aktiven > ' + f(beerd + schulden + verpfl) + '</p>';
+
+  const vLabel = (teilw) => teilw
+    ? '+ Verpflichtung (teilw.): ' + f(vPK) + ' von ' + f(vSollPK) + ', Fehlbetrag ' + f(fPK)
+    : '+ Verpflichtung: ' + f(vPK);
+
+  document.getElementById('cardsA').innerHTML = [nT, nS1, nS2].map(n =>
+    card(n, false, f(drittel + vPK), '1/3 Nachlass: ' + f(drittel), vFehlt > 0, vLabel(vFehlt > 0))
+  ).join('');
+
+  const stA = document.getElementById('statusA');
+  if (pos) {
+    stA.className = 'ok'; stA.innerHTML = 'Nachlass ist positiv (' + f(reiner) + '). Ziff. 2.4 zweiter Teil greift nicht.';
+  } else {
+    stA.className = 'warn'; stA.innerHTML = 'Nachlass ist verschuldet (' + f(reiner) + '). Ziff. 2.4 zweiter Teil greift — Tochter zahlt Söhnen je CHF 31\'250.' + (vFehlt > 0 ? ' Verpflichtung nur teilweise (' + f(vAusbez) + ' von ' + f(verpfl) + ') ausbezahlbar.' : '');
+  }
+
+  const pJeSohn = 31250;
+  const pBeide  = 62500;
+
+  if (pos) {
+    document.getElementById('pbSek').innerHTML =
+      '<div class="sec-pb-off"><div class="ttl">Pflichtteil an Preisbegünstigung (Ziff. 2.4) <span class="ti">greift nicht</span></div><p style="font-size:13px;color:var(--color-text-secondary);">Nachlass positiv — keine Zahlung der Tochter an Söhne.</p></div>';
+    document.getElementById('totalA').innerHTML =
+      card(nT, true,  f(drittel + vPK),           '1/3 Nachlass: ' + f(drittel), vFehlt > 0, vLabel(vFehlt > 0)) +
+      card(nS1, false, f(drittel + vPK),           '1/3 Nachlass: ' + f(drittel), vFehlt > 0, vLabel(vFehlt > 0)) +
+      card(nS2, false, f(drittel + vPK),           '1/3 Nachlass: ' + f(drittel), vFehlt > 0, vLabel(vFehlt > 0));
+  } else {
+    document.getElementById('pbSek').innerHTML =
+      '<div class="sec-pb"><div class="ttl">Pflichtteil an Preisbegünstigung (Ziff. 2.4) <span class="ta">greift</span></div>' +
+      step('Pflichtteil je Sohn (CHF 125\'000 × 1/4)', f(pJeSohn), 'Zahlung von Tochter direkt an Söhne — aus eigenen Mitteln') +
+      '</div>';
+    document.getElementById('totalA').innerHTML =
+      card(nT,  true,  f(drittel + vPK - pBeide),  '1/3 Nachlass: ' + f(drittel), vFehlt > 0, vLabel(vFehlt > 0), './. Zahlung Söhne: ' + f(pBeide)) +
+      card(nS1, false, f(drittel + vPK + pJeSohn), '1/3 Nachlass: ' + f(drittel), vFehlt > 0, vLabel(vFehlt > 0), '+ Pflichtteil Preisbeg.: ' + f(pJeSohn)) +
+      card(nS2, false, f(drittel + vPK + pJeSohn), '1/3 Nachlass: ' + f(drittel), vFehlt > 0, vLabel(vFehlt > 0), '+ Pflichtteil Preisbeg.: ' + f(pJeSohn));
+  }
+
+  // === SZENARIO B: Tochter schlägt aus ===
+  const vSöhne   = (verpfl / 3) * 2;
+  const nachBB   = brutto - beerd - schulden;
+  const vAusbezB = Math.min(vSöhne, Math.max(0, nachBB));
+  const vFehltB  = vSöhne - vAusbezB;
+  const reinerB  = nachBB - vSöhne;
+  const haelfte  = Math.max(0, reinerB) / 2;
+  const vJeSohnB = vAusbezB / 2;
+  const vSollJSB = vSöhne / 2;
+  const posB     = reinerB >= 0;
+
+  document.getElementById('rechnungB').innerHTML =
+    '<p style="font-size:13px;color:var(--color-text-secondary);margin-bottom:12px;">Tochter scheidet vollständig aus — keine Rechte, keine Pflichten. Verpflichtung nur noch ggü. zwei Söhnen (' + f(vSöhne) + ').</p>' +
+    step('Aktiven beim Tod', f(brutto)) +
+    step('./. Beerdigungskosten', '− ' + f(beerd)) +
+    step('./. Weitere Schulden', '− ' + f(schulden)) +
+    step('./. Verpflichtung ggü. 2 Söhnen (2/3 von ' + f(verpfl) + ')', '− ' + f(vSöhne),
+      vFehltB > 0
+        ? 'Nachlassmittel decken nur ' + f(vAusbezB) + ' — Fehlbetrag ' + f(vFehltB)
+        : 'Je Sohn: ' + f(vJeSohnB)) +
+    '<hr class="div">' +
+    tr('Reiner Nachlass', f(reinerB), true) +
+    tr('Erbteil je Sohn (1/2)', f(haelfte)) +
+    (!posB ? '<p style="font-size:12px;color:var(--color-text-warning);margin-top:8px;">Nachlass verschuldet — Söhne können ihrerseits ausschlagen (Art. 566 ZGB).</p>' : '');
+
+  document.getElementById('cardsB').innerHTML = [nS1, nS2].map(n =>
+    card(n, false, f(haelfte + vJeSohnB), '1/2 Nachlass: ' + f(haelfte),
+      vFehltB > 0,
+      '+ Verpflichtung' + (vFehltB > 0 ? ' (teilw.): ' + f(vJeSohnB) + ' von ' + f(vSollJSB) : ': ' + f(vJeSohnB)))
+  ).join('');
+}
+
+function step(label, value, expl) {
+  return '<div class="step"><div class="sl">' + label + '</div><div class="sv">' + value + '</div>' +
+    (expl ? '<div class="se">' + expl + '</div>' : '') + '</div>';
+}
+function tr(label, value, big) {
+  return '<div class="tr' + (big ? ' big' : '') + '"><span class="tl">' + label + '</span><span class="tv">' + value + '</span></div>';
+}
+function card(name, haus, amount, d1, warn, d2, d3) {
+  return '<div class="card">' +
+    '<div class="cn">' + name + (haus ? ' <span class="hb">Haus</span>' : '') + '</div>' +
+    '<div class="ca">' + amount + '</div>' +
+    '<div class="cd">' + d1 + '</div>' +
+    (d2 ? '<div class="' + (warn ? 'cdw' : 'cd') + '">' + d2 + '</div>' : '') +
+    (d3 ? '<div class="cd">' + d3 + '</div>' : '') +
+    '</div>';
+}
+
+calc();
+</script>
