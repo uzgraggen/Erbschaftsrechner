@@ -1,122 +1,307 @@
-
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Erbschaftsrechner</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Lora:wght@400;500;600&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
 <style>
+:root {
+  --bg: #F7F5F0;
+  --surface: #FFFFFF;
+  --surface2: #F2EFE9;
+  --border: #E0DDD6;
+  --text: #1C1A17;
+  --muted: #7A776E;
+  --hint: #A8A49C;
+  --accent: #2D6A4F;
+  --accent-light: #EAF4EE;
+  --accent-border: #B7D9C5;
+  --warn: #92400E;
+  --warn-light: #FEF3C7;
+  --warn-border: #FCD34D;
+  --info: #1E40AF;
+  --info-light: #EFF6FF;
+  --info-border: #BFDBFE;
+  --danger: #991B1B;
+  --danger-light: #FEF2F2;
+  --danger-border: #FECACA;
+  --coral: #9A3412;
+  --coral-light: #FFF7ED;
+  --coral-border: #FDBA74;
+  --radius: 12px;
+  --radius-sm: 8px;
+  --shadow: 0 1px 3px rgba(0,0,0,0.06);
+}
 * { box-sizing: border-box; margin: 0; padding: 0; }
-.wrap { padding: 1rem 0; }
-.sec { background: var(--color-background-primary); border: 0.5px solid var(--color-border-tertiary); border-radius: var(--border-radius-lg); padding: 1.25rem; margin-bottom: 1rem; }
-.sec-b { background: var(--color-background-primary); border: 2px solid var(--color-border-warning); border-radius: var(--border-radius-lg); padding: 1.25rem; margin-bottom: 1rem; }
-.sec-pb { background: var(--color-background-primary); border: 2px solid var(--color-border-info); border-radius: var(--border-radius-lg); padding: 1.25rem; margin-bottom: 1rem; }
-.sec-pb-off { background: var(--color-background-secondary); border: 0.5px solid var(--color-border-tertiary); border-radius: var(--border-radius-lg); padding: 1.25rem; margin-bottom: 1rem; opacity:0.6; }
-.ttl { font-size: 13px; font-weight: 500; color: var(--color-text-secondary); text-transform: uppercase; letter-spacing: .05em; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
-.row { display: flex; align-items: center; gap: 12px; margin-bottom: 10px; }
-.lbl { font-size: 14px; color: var(--color-text-primary); flex: 1; min-width: 0; }
-.lbl small { display: block; font-size: 12px; color: var(--color-text-secondary); }
-.inp { display: flex; align-items: center; gap: 6px; flex-shrink: 0; }
-.inp span { font-size: 13px; color: var(--color-text-secondary); }
-input[type=number] { width: 120px; font-size: 14px; }
-input[type=text] { width: 120px; font-size: 14px; }
-.step { border-left: 2px solid var(--color-border-secondary); padding-left: 12px; margin-bottom: 10px; }
-.sl { font-size: 12px; color: var(--color-text-secondary); margin-bottom: 2px; }
-.sv { font-size: 15px; font-weight: 500; color: var(--color-text-primary); }
-.se { font-size: 12px; color: var(--color-text-tertiary); margin-top: 2px; line-height: 1.4; }
-.grid3 { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 10px; }
-.grid2 { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 10px; }
-.card { background: var(--color-background-secondary); border-radius: var(--border-radius-md); padding: 12px; text-align: center; }
-.cn { font-size: 12px; color: var(--color-text-secondary); margin-bottom: 4px; }
-.ca { font-size: 20px; font-weight: 500; color: var(--color-text-primary); }
-.cd { font-size: 11px; color: var(--color-text-tertiary); margin-top: 4px; }
-.cdw { font-size: 11px; color: var(--color-text-warning); margin-top: 4px; }
-.ok   { background: var(--color-background-success); border: 0.5px solid var(--color-border-success); border-radius: var(--border-radius-md); padding: 10px 14px; font-size: 13px; color: var(--color-text-success); }
-.warn { background: var(--color-background-warning); border: 0.5px solid var(--color-border-warning); border-radius: var(--border-radius-md); padding: 10px 14px; font-size: 13px; color: var(--color-text-warning); }
-.info { background: var(--color-background-info); border: 0.5px solid var(--color-border-info); border-radius: var(--border-radius-md); padding: 10px 14px; font-size: 13px; color: var(--color-text-info); }
-.danger { background: var(--color-background-danger); border: 0.5px solid var(--color-border-danger); border-radius: var(--border-radius-md); padding: 10px 14px; font-size: 13px; color: var(--color-text-danger); }
-.frist-box { background: var(--color-background-danger); border: 1.5px solid var(--color-border-danger); border-radius: var(--border-radius-md); padding: 12px 14px; font-size: 13px; color: var(--color-text-danger); margin-bottom: 12px; line-height: 1.6; }
-.frist-box strong { font-weight: 500; }
-.frist-box .frist-title { font-size: 11px; font-weight: 500; text-transform: uppercase; letter-spacing: .05em; margin-bottom: 6px; opacity: 0.8; }
-.tr { display: flex; justify-content: space-between; align-items: baseline; padding: 4px 0; }
-.tl { font-size: 14px; color: var(--color-text-secondary); }
-.tv { font-size: 14px; font-weight: 500; color: var(--color-text-primary); }
-.big .tl { font-size: 15px; color: var(--color-text-primary); font-weight: 500; }
-.big .tv { font-size: 17px; }
-.hb { display: inline-block; font-size: 11px; padding: 2px 8px; border-radius: var(--border-radius-md); background: var(--color-background-success); color: var(--color-text-success); margin-left: 4px; }
-.ta { display: inline-block; font-size: 11px; padding: 2px 8px; border-radius: var(--border-radius-md); background: var(--color-background-info); color: var(--color-text-info); margin-left: 4px; }
-.ti { display: inline-block; font-size: 11px; padding: 2px 8px; border-radius: var(--border-radius-md); background: var(--color-background-secondary); color: var(--color-text-secondary); margin-left: 4px; }
-hr.div { border: none; border-top: 0.5px solid var(--color-border-tertiary); margin: 10px 0; }
-@media(max-width:480px){ .grid3,.grid2{ grid-template-columns:1fr; } input[type=number],input[type=text]{width:100px;} }
+body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
+
+header { background: var(--surface); border-bottom: 1px solid var(--border); padding: 1.5rem 1.25rem 1.25rem; }
+header h1 { font-family: 'Lora', serif; font-size: clamp(1.3rem, 4vw, 1.75rem); font-weight: 600; letter-spacing: -0.02em; margin-bottom: 0.2rem; }
+header p { font-size: 0.8rem; color: var(--muted); font-weight: 300; }
+
+nav { background: var(--surface); border-bottom: 1px solid var(--border); display: flex; overflow-x: auto; }
+nav button { font-family: 'DM Sans', sans-serif; font-size: 0.8125rem; font-weight: 400; color: var(--muted); background: none; border: none; border-bottom: 2px solid transparent; padding: 0.75rem 1.25rem; cursor: pointer; white-space: nowrap; transition: all 0.15s; }
+nav button.active { color: var(--accent); border-bottom-color: var(--accent); font-weight: 500; }
+nav button:hover { color: var(--text); }
+
+main { max-width: 700px; margin: 0 auto; padding: 1.25rem 1rem 3rem; }
+
+.tab-panel { display: none; }
+.tab-panel.active { display: block; }
+
+.card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.25rem; margin-bottom: 1rem; box-shadow: var(--shadow); }
+.card-warn { background: var(--surface); border: 2px solid var(--warn-border); border-radius: var(--radius); padding: 1.25rem; margin-bottom: 1rem; box-shadow: var(--shadow); }
+.card-info { background: var(--surface); border: 2px solid var(--info-border); border-radius: var(--radius); padding: 1.25rem; margin-bottom: 1rem; }
+.card-off { background: var(--surface2); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.25rem; margin-bottom: 1rem; opacity: 0.65; }
+
+.sec-label { font-size: 0.65rem; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem; }
+.sec-label::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+
+.field { display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.75rem; }
+.field-lbl { flex: 1; font-size: 0.875rem; color: var(--text); min-width: 0; }
+.field-lbl small { display: block; font-size: 0.72rem; color: var(--hint); margin-top: 1px; font-weight: 300; }
+.field-inp { display: flex; align-items: center; gap: 0.35rem; flex-shrink: 0; }
+.field-inp .pfx { font-size: 0.8rem; color: var(--muted); font-weight: 300; }
+
+input[type=number], input[type=text] {
+  font-family: 'DM Sans', sans-serif; font-size: 0.875rem; color: var(--text);
+  background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius-sm);
+  padding: 0.5rem 0.625rem; width: 120px; transition: border-color 0.15s; -webkit-appearance: none;
+}
+input:focus { outline: none; border-color: var(--accent); background: #fff; }
+
+.step-line { border-left: 2px solid var(--border); padding-left: 0.875rem; margin-bottom: 0.75rem; }
+.step-line .sl { font-size: 0.75rem; color: var(--muted); margin-bottom: 2px; }
+.step-line .sv { font-size: 0.9375rem; font-weight: 500; }
+.step-line .se { font-size: 0.72rem; color: var(--hint); margin-top: 2px; line-height: 1.4; }
+
+.divider { border: none; border-top: 1px solid var(--border); margin: 0.75rem 0; }
+
+.tot-row { display: flex; justify-content: space-between; align-items: baseline; padding: 3px 0; }
+.tot-row .tl { font-size: 0.875rem; color: var(--muted); }
+.tot-row .tv { font-size: 0.875rem; font-weight: 500; }
+.tot-row.big .tl { font-size: 0.9375rem; font-weight: 500; color: var(--text); }
+.tot-row.big .tv { font-size: 1.0625rem; font-weight: 600; }
+
+.threshold { font-size: 0.72rem; color: var(--hint); margin-top: 0.5rem; }
+
+.grid3 { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 0.625rem; }
+.grid2 { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 0.625rem; }
+
+.rc { background: var(--surface2); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 0.875rem 0.75rem; text-align: center; }
+.rc .rn { font-size: 0.7rem; color: var(--muted); margin-bottom: 0.375rem; }
+.rc .ra { font-family: 'Lora', serif; font-size: 1.2rem; font-weight: 600; line-height: 1.2; }
+.rc .rd { font-size: 0.7rem; color: var(--hint); margin-top: 0.25rem; line-height: 1.35; }
+.rc .rw { font-size: 0.7rem; color: var(--warn); margin-top: 0.25rem; line-height: 1.35; }
+
+.badge { display: inline-block; font-size: 0.65rem; padding: 1px 6px; border-radius: 20px; vertical-align: middle; margin-left: 3px; }
+.bg-green { background: var(--accent-light); color: var(--accent); border: 1px solid var(--accent-border); }
+.bg-blue  { background: var(--info-light); color: var(--info); border: 1px solid var(--info-border); }
+.bg-gray  { background: var(--surface2); color: var(--muted); border: 1px solid var(--border); }
+
+.alert { border-radius: var(--radius-sm); padding: 0.75rem 1rem; font-size: 0.8125rem; line-height: 1.5; margin-top: 0.875rem; }
+.al-ok     { background: var(--accent-light); color: var(--accent); border: 1px solid var(--accent-border); }
+.al-warn   { background: var(--warn-light); color: var(--warn); border: 1px solid var(--warn-border); }
+.al-info   { background: var(--info-light); color: var(--info); border: 1px solid var(--info-border); }
+.al-danger { background: var(--danger-light); color: var(--danger); border: 1px solid var(--danger-border); }
+
+.frist-box { background: var(--danger-light); border: 1.5px solid var(--danger-border); border-radius: var(--radius-sm); padding: 0.875rem 1rem; font-size: 0.8125rem; color: var(--danger); margin-bottom: 1rem; line-height: 1.6; }
+.frist-box .ft { font-size: 0.65rem; font-weight: 500; text-transform: uppercase; letter-spacing: .08em; margin-bottom: 0.5rem; opacity: 0.8; }
+
+/* Chart tab */
+.chart-controls { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.25rem; margin-bottom: 1rem; box-shadow: var(--shadow); }
+.chart-row { display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.625rem; }
+.chart-row:last-child { margin-bottom: 0; }
+.chart-lbl { flex: 1; font-size: 0.875rem; color: var(--text); }
+.chart-lbl small { display: block; font-size: 0.72rem; color: var(--hint); font-weight: 300; }
+
+.chart-wrap { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.25rem; box-shadow: var(--shadow); }
+.chart-canvas-wrap { position: relative; width: 100%; height: 340px; }
+
+.legend { display: flex; flex-wrap: wrap; gap: 1rem; margin-top: 1rem; font-size: 0.75rem; color: var(--muted); }
+.legend-item { display: flex; align-items: center; gap: 0.375rem; }
+.legend-dot { width: 10px; height: 10px; border-radius: 2px; }
+.legend-line { width: 16px; height: 2px; }
+.legend-dash { width: 16px; height: 0; border-top: 2px dashed; }
+
+footer { text-align: center; font-size: 0.72rem; color: var(--hint); padding: 1.5rem 1rem; border-top: 1px solid var(--border); margin-top: 1rem; }
+
+@media (max-width: 480px) {
+  .grid3 { grid-template-columns: 1fr; }
+  .grid2 { grid-template-columns: 1fr; }
+  input[type=number], input[type=text] { width: 100px; font-size: 0.8rem; }
+  .field-lbl { font-size: 0.8125rem; }
+  .rc .ra { font-size: 1.05rem; }
+}
 </style>
+</head>
+<body>
 
-<div class="wrap">
+<header>
+  <h1>Erbschaftsrechner</h1>
+  <p>Testament 13. Februar 2017 &nbsp;·&nbsp; Erblasser verstorben 31. Dezember 2025</p>
+</header>
 
-<div class="sec">
-  <div class="ttl">Schritt 1 — Nachlass beim Tod</div>
-  <div class="row"><div class="lbl">Kontostand beim Tod</div><div class="inp"><span>CHF</span><input type="number" id="konto" value="0" min="0" step="1000" oninput="calc()"></div></div>
-  <div class="row"><div class="lbl">Weitere Aktiven<small>Wertschriften, Fahrzeug etc.</small></div><div class="inp"><span>CHF</span><input type="number" id="aktiven" value="0" min="0" step="1000" oninput="calc()"></div></div>
-  <div class="row"><div class="lbl">Beerdigungskosten<small>Vorweg vom Nachlass (Art. 474 ZGB)</small></div><div class="inp"><span>CHF</span><input type="number" id="beerdigung" value="20000" min="0" step="1000" oninput="calc()"></div></div>
-  <div class="row"><div class="lbl">Weitere Schulden / Passiven</div><div class="inp"><span>CHF</span><input type="number" id="schulden" value="0" min="0" step="1000" oninput="calc()"></div></div>
-  <div class="row"><div class="lbl">Verpflichtung ggü. Kindern (Ziff. 2.4)<small>Nachlassschuld — wird voll abgezogen</small></div><div class="inp"><span>CHF</span><input type="number" id="verpfl" value="127500" min="0" step="500" oninput="calc()"></div></div>
-</div>
+<nav>
+  <button class="active" onclick="showTab('rechner', this)">Rechner</button>
+  <button onclick="showTab('grafik', this)">Grafik</button>
+</nav>
 
-<div class="sec">
-  <div class="ttl">Schritt 2 — Namen der Kinder</div>
-  <div class="row"><div class="lbl">Tochter <span class="hb">Haus erworben</span></div><div class="inp"><input type="text" id="nT" value="Tochter" oninput="calc()"></div></div>
-  <div class="row"><div class="lbl">Sohn 1</div><div class="inp"><input type="text" id="nS1" value="Sohn 1" oninput="calc()"></div></div>
-  <div class="row"><div class="lbl">Sohn 2</div><div class="inp"><input type="text" id="nS2" value="Sohn 2" oninput="calc()"></div></div>
-</div>
+<main>
 
-<div class="sec">
-  <div class="ttl">Schritt 3 — Szenario A: alle drei erben</div>
-  <div id="rechnungA"></div>
-</div>
+<!-- ═══════════════ TAB: RECHNER ═══════════════ -->
+<div id="tab-rechner" class="tab-panel active">
 
-<div class="sec">
-  <div class="ttl">Ergebnis A — Barauszahlung pro Kind</div>
-  <div class="grid3" id="cardsA"></div>
-  <div id="statusA" style="margin-top:1rem;"></div>
-</div>
-
-<div id="pbSek"></div>
-
-<div class="sec">
-  <div class="ttl">Gesamtergebnis Szenario A</div>
-  <div class="grid3" id="totalA"></div>
-</div>
-
-<div class="sec-b">
-  <div class="ttl">Szenario B — Tochter schlägt Erbe aus</div>
-
-  <div class="frist-box">
-    <div class="frist-title">Achtung — Ausschlagungsfrist (Art. 567 ZGB)</div>
-    <strong>Frist: 3 Monate ab Kenntnis des Erbfalls.</strong><br>
-    Die Kinder sind gleichzeitig gesetzliche Erben (als Kinder des Erblassers) und eingesetzte Erben (gemäss Testament). Bei gesetzlichen Erben beginnt die Frist mit Kenntnis des Todes — hier der <strong>31. Dezember 2025</strong>, was eine Frist bis zum <strong>31. März 2026</strong> ergäbe. Da dieser Termin verstrichen ist, könnte die Ausschlagung bereits nicht mehr möglich sein.<br><br>
-    Falls die amtliche Mitteilung des Testaments massgebend ist (Art. 567 Abs. 2), beginnt die Frist mit deren Zustellung. Die Söhne erhielten die Mitteilung am <strong>15. April 2026</strong> — ihre Frist läuft bis zum <strong>15. Juli 2026</strong>.<br><br>
-    <strong>Sofort Erbrechtsanwalt beiziehen — die Frage ist rechtlich nicht trivial und zeitkritisch.</strong>
+  <div class="card">
+    <div class="sec-label">Schritt 1 — Nachlass beim Tod</div>
+    <div class="field">
+      <div class="field-lbl">Kontostand beim Tod</div>
+      <div class="field-inp"><span class="pfx">CHF</span><input type="number" id="konto" value="0" min="0" step="1000" oninput="calc()"></div>
+    </div>
+    <div class="field">
+      <div class="field-lbl">Weitere Aktiven<small>Wertschriften, Fahrzeug etc.</small></div>
+      <div class="field-inp"><span class="pfx">CHF</span><input type="number" id="aktiven" value="0" min="0" step="1000" oninput="calc()"></div>
+    </div>
+    <div class="field">
+      <div class="field-lbl">Beerdigungskosten<small>Vorweg vom Nachlass (Art. 474 ZGB)</small></div>
+      <div class="field-inp"><span class="pfx">CHF</span><input type="number" id="beerdigung" value="20000" min="0" step="1000" oninput="calc()"></div>
+    </div>
+    <div class="field">
+      <div class="field-lbl">Weitere Schulden / Passiven<small>Steuern, ausstehende Rechnungen etc.</small></div>
+      <div class="field-inp"><span class="pfx">CHF</span><input type="number" id="schulden" value="0" min="0" step="1000" oninput="calc()"></div>
+    </div>
+    <div class="field">
+      <div class="field-lbl">Verpflichtung ggü. Kindern (Ziff. 2.4)<small>Nachlassschuld — wird voll abgezogen</small></div>
+      <div class="field-inp"><span class="pfx">CHF</span><input type="number" id="verpfl" value="127500" min="0" step="500" oninput="calc()"></div>
+    </div>
   </div>
 
-  <div id="rechnungB"></div>
-  <div class="grid2" id="cardsB" style="margin-top:1rem;"></div>
-</div>
+  <div class="card">
+    <div class="sec-label">Schritt 2 — Namen der Kinder</div>
+    <div class="field">
+      <div class="field-lbl">Tochter <span class="badge bg-green">Haus erworben</span></div>
+      <div class="field-inp"><input type="text" id="nT" value="Tochter" oninput="calc()"></div>
+    </div>
+    <div class="field">
+      <div class="field-lbl">Sohn 1</div>
+      <div class="field-inp"><input type="text" id="nS1" value="Sohn 1" oninput="calc()"></div>
+    </div>
+    <div class="field">
+      <div class="field-lbl">Sohn 2</div>
+      <div class="field-inp"><input type="text" id="nS2" value="Sohn 2" oninput="calc()"></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="sec-label">Schritt 3 — Szenario A: alle drei erben</div>
+    <div id="rechnungA"></div>
+  </div>
+
+  <div class="card">
+    <div class="sec-label">Ergebnis A — Barauszahlung pro Kind</div>
+    <div class="grid3" id="cardsA"></div>
+    <div id="statusA"></div>
+  </div>
+
+  <div id="pbSek"></div>
+
+  <div class="card">
+    <div class="sec-label">Gesamtergebnis Szenario A</div>
+    <div class="grid3" id="totalA"></div>
+  </div>
+
+  <div class="card-warn">
+    <div class="sec-label">Szenario B — Tochter schlägt Erbe aus</div>
+    <div class="frist-box">
+      <div class="ft">Achtung — Ausschlagungsfrist (Art. 567 ZGB)</div>
+      <strong>Frist: 3 Monate ab Kenntnis des Erbfalls.</strong><br>
+      Die Kinder sind gleichzeitig <em>gesetzliche</em> Erben (als Kinder) und <em>eingesetzte</em> Erben (Testament). Bei gesetzlichen Erben beginnt die Frist mit Kenntnis des Todes — hier <strong>31. Dezember 2025</strong>, Fristablauf <strong>31. März 2026</strong>.<br><br>
+      Falls die amtliche Mitteilung des Testaments massgebend ist (Art. 567 Abs. 2), läuft die Frist ab Zustellung. Die Söhne erhielten die Mitteilung am <strong>15. April 2026</strong> — Fristablauf <strong>15. Juli 2026</strong>.<br><br>
+      <strong>Sofort Erbrechtsanwalt beiziehen — zeitkritisch.</strong>
+    </div>
+    <div id="rechnungB"></div>
+    <div class="grid2" id="cardsB" style="margin-top:1rem;"></div>
+  </div>
 
 </div>
 
+<!-- ═══════════════ TAB: GRAFIK ═══════════════ -->
+<div id="tab-grafik" class="tab-panel">
+
+  <div class="chart-controls">
+    <div class="sec-label">Parameter</div>
+    <div class="chart-row">
+      <div class="chart-lbl">Beerdigungskosten<small>Verschiebt den Sprungpunkt</small></div>
+      <div class="field-inp"><span class="pfx">CHF</span><input type="number" id="g-beerd" value="20000" min="0" step="1000" oninput="drawChart()"></div>
+    </div>
+    <div class="chart-row">
+      <div class="chart-lbl">Weitere Schulden</div>
+      <div class="field-inp"><span class="pfx">CHF</span><input type="number" id="g-schulden" value="0" min="0" step="1000" oninput="drawChart()"></div>
+    </div>
+    <div class="chart-row">
+      <div class="chart-lbl">Verpflichtung ggü. Kindern (Ziff. 2.4)</div>
+      <div class="field-inp"><span class="pfx">CHF</span><input type="number" id="g-verpfl" value="127500" min="0" step="500" oninput="drawChart()"></div>
+    </div>
+    <div class="chart-row">
+      <div class="chart-lbl">Kontostand x-Achse bis</div>
+      <div class="field-inp"><span class="pfx">CHF</span><input type="number" id="g-max" value="300000" min="50000" step="50000" oninput="drawChart()"></div>
+    </div>
+  </div>
+
+  <div class="chart-wrap">
+    <div class="chart-canvas-wrap">
+      <canvas id="myChart" role="img" aria-label="Gesamtergebnis Tochter und Sohn in Abhängigkeit des Kontostands">Liniengrafik Gesamtergebnis pro Kind.</canvas>
+    </div>
+    <div class="legend">
+      <div class="legend-item"><span class="legend-dot" style="background:#1D9E75;"></span> Tochter</div>
+      <div class="legend-item"><span class="legend-line" style="background:#378ADD;border-top:2px dashed #378ADD;height:0;width:20px;"></span> Sohn (je)</div>
+      <div class="legend-item"><span class="legend-dash" style="border-color:#D85A30;"></span> Sprungpunkt</div>
+    </div>
+    <div id="chart-info" class="threshold" style="margin-top:0.75rem;"></div>
+  </div>
+
+</div>
+
+</main>
+
+<footer>Kein Rechtsgutachten — bitte Erbrechtsanwalt beiziehen.</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
 <script>
-function fmt(n) {
-  return (n < 0 ? '−' : '') + 'CHF ' + Math.abs(Math.round(n)).toLocaleString('de-CH');
+
+/* ── Tab navigation ── */
+function showTab(id, btn) {
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
+  document.getElementById('tab-' + id).classList.add('active');
+  btn.classList.add('active');
+  if (id === 'grafik') drawChart();
 }
-function step(label, value, expl) {
-  return '<div class="step"><div class="sl">' + label + '</div><div class="sv">' + value + '</div>' +
+
+/* ── Formatting ── */
+function fmt(n) {
+  return (n < 0 ? '−\u202fCHF\u202f' : 'CHF\u202f') + Math.abs(Math.round(n)).toLocaleString('de-CH');
+}
+
+/* ── HTML helpers ── */
+function stepHtml(label, value, expl) {
+  return '<div class="step-line"><div class="sl">' + label + '</div><div class="sv">' + value + '</div>' +
     (expl ? '<div class="se">' + expl + '</div>' : '') + '</div>';
 }
-function tr(label, value, big) {
-  return '<div class="tr' + (big?' big':'') + '"><span class="tl">' + label + '</span><span class="tv">' + value + '</span></div>';
+function trHtml(label, value, big) {
+  return '<div class="tot-row' + (big ? ' big' : '') + '"><span class="tl">' + label +
+    '</span><span class="tv">' + value + '</span></div>';
 }
-function card(name, haus, amount, d1, warn, d2, d3) {
-  return '<div class="card"><div class="cn">' + name + (haus?' <span class="hb">Haus</span>':'') + '</div>' +
-    '<div class="ca">' + amount + '</div>' +
-    '<div class="cd">' + d1 + '</div>' +
-    (d2 ? '<div class="'+(warn?'cdw':'cd')+'">' + d2 + '</div>' : '') +
-    (d3 ? '<div class="cd">' + d3 + '</div>' : '') +
-    '</div>';
+function rcHtml(name, hasBadge, amount, details) {
+  return '<div class="rc"><div class="rn">' + name +
+    (hasBadge ? ' <span class="badge bg-green">Haus</span>' : '') +
+    '</div><div class="ra">' + amount + '</div>' +
+    details.map(d => '<div class="' + (d.w ? 'rw' : 'rd') + '">' + d.t + '</div>').join('') + '</div>';
 }
 
+/* ── Main calculation ── */
 function calc() {
   const konto    = +document.getElementById('konto').value    || 0;
   const aktiven  = +document.getElementById('aktiven').value  || 0;
@@ -126,6 +311,11 @@ function calc() {
   const nT  = document.getElementById('nT').value  || 'Tochter';
   const nS1 = document.getElementById('nS1').value || 'Sohn 1';
   const nS2 = document.getElementById('nS2').value || 'Sohn 2';
+
+  // Sync to chart inputs
+  document.getElementById('g-beerd').value   = beerd;
+  document.getElementById('g-schulden').value = schulden;
+  document.getElementById('g-verpfl').value  = verpfl;
 
   const brutto  = konto + aktiven;
   const nachB   = brutto - beerd - schulden;
@@ -138,88 +328,248 @@ function calc() {
   const fPK     = vFehlt / 3;
   const drittel = Math.max(0, reiner) / 3;
 
+  // Szenario A: Berechnung
   document.getElementById('rechnungA').innerHTML =
-    step('Kontostand + weitere Aktiven', fmt(brutto)) +
-    step('./. Beerdigungskosten (Art. 474 ZGB)', '− ' + fmt(beerd), 'Vorweg vom Nachlass getragen') +
-    step('./. Weitere Schulden', '− ' + fmt(schulden)) +
-    step('./. Verpflichtung ggü. Kindern (Ziff. 2.4)', '− ' + fmt(verpfl),
+    stepHtml('Kontostand + weitere Aktiven', fmt(brutto)) +
+    stepHtml('./. Beerdigungskosten (Art. 474 ZGB)', '− ' + fmt(beerd), 'Vorweg vom Nachlass getragen') +
+    stepHtml('./. Weitere Schulden', '− ' + fmt(schulden)) +
+    stepHtml('./. Verpflichtung ggü. Kindern (Ziff. 2.4)', '− ' + fmt(verpfl),
       vFehlt > 0
         ? 'Nachlassmittel decken nur ' + fmt(vAusbez) + ' — Fehlbetrag ' + fmt(vFehlt)
         : 'Je Kind: ' + fmt(vPK)) +
-    '<hr class="div">' +
-    tr('Reiner Nachlass', fmt(reiner), true) +
-    tr('Erbteil je Kind (1/3)', fmt(drittel)) +
-    '<p style="font-size:12px;color:var(--color-text-tertiary);margin-top:8px;">Nachlass positiv wenn Aktiven > ' + fmt(beerd + schulden + verpfl) + '</p>';
+    '<hr class="divider">' +
+    trHtml('Reiner Nachlass', fmt(reiner), true) +
+    trHtml('Erbteil je Kind (⅓)', fmt(drittel)) +
+    '<p class="threshold">Nachlass positiv wenn Aktiven &gt; ' + fmt(beerd + schulden + verpfl) + '</p>';
 
-  const vLabel = (w) => w
-    ? '+ Verpflichtung (teilw.): ' + fmt(vPK) + ' von ' + fmt(vSollPK) + ', Fehlbetrag ' + fmt(fPK)
-    : '+ Verpflichtung: ' + fmt(vPK);
+  function vDets(w) {
+    return w
+      ? [{ t: '⅓ Nachlass: ' + fmt(drittel) },
+         { t: '+ Verpflichtung (teilw.): ' + fmt(vPK) + ' von ' + fmt(vSollPK) + ', Fehlbetrag ' + fmt(fPK), w: true }]
+      : [{ t: '⅓ Nachlass: ' + fmt(drittel) },
+         { t: '+ Verpflichtung: ' + fmt(vPK) }];
+  }
 
-  document.getElementById('cardsA').innerHTML = [nT, nS1, nS2].map(n =>
-    card(n, false, fmt(drittel + vPK), '1/3 Nachlass: ' + fmt(drittel), vFehlt > 0, vLabel(vFehlt > 0))
-  ).join('');
+  document.getElementById('cardsA').innerHTML =
+    rcHtml(nT,  false, fmt(drittel + vPK), vDets(vFehlt > 0)) +
+    rcHtml(nS1, false, fmt(drittel + vPK), vDets(vFehlt > 0)) +
+    rcHtml(nS2, false, fmt(drittel + vPK), vDets(vFehlt > 0));
 
   const stA = document.getElementById('statusA');
-  if (pos) {
-    stA.innerHTML = '<div class="ok">Nachlass positiv (' + fmt(reiner) + '). Ziff. 2.4 zweiter Teil greift nicht — Tochter schuldet Söhnen keine zusätzliche Zahlung.</div>';
-  } else {
-    stA.innerHTML = '<div class="warn">Nachlass verschuldet (' + fmt(reiner) + '). Ziff. 2.4 zweiter Teil greift — Tochter zahlt Söhnen je CHF 31\'250 aus eigenen Mitteln.' +
+  stA.innerHTML = pos
+    ? '<div class="alert al-ok">Nachlass positiv (' + fmt(reiner) + '). Ziff. 2.4 zweiter Teil greift nicht — Tochter schuldet Söhnen keine zusätzliche Zahlung.</div>'
+    : '<div class="alert al-warn">Nachlass verschuldet (' + fmt(reiner) + '). Ziff. 2.4 zweiter Teil greift — Tochter zahlt Söhnen je CHF\u202f31\'250 aus eigenen Mitteln.' +
       (vFehlt > 0 ? ' Verpflichtung nur teilweise ausbezahlbar (' + fmt(vAusbez) + ' von ' + fmt(verpfl) + ').' : '') + '</div>';
-  }
 
   const pJeSohn = 31250;
   const pBeide  = 62500;
 
   if (pos) {
     document.getElementById('pbSek').innerHTML =
-      '<div class="sec-pb-off"><div class="ttl">Pflichtteil an Preisbegünstigung (Ziff. 2.4) <span class="ti">greift nicht</span></div>' +
-      '<p style="font-size:13px;color:var(--color-text-secondary);">Nachlass positiv — keine Zahlung der Tochter an Söhne.</p></div>';
+      '<div class="card-off"><div class="sec-label">Pflichtteil an Preisbegünstigung (Ziff. 2.4) <span class="badge bg-gray">greift nicht</span></div>' +
+      '<p style="font-size:.8125rem;color:var(--hint);">Nachlass positiv — keine zusätzliche Zahlung der Tochter.</p></div>';
     document.getElementById('totalA').innerHTML =
-      card(nT,  true,  fmt(drittel + vPK), '1/3 Nachlass: ' + fmt(drittel), vFehlt>0, vLabel(vFehlt>0)) +
-      card(nS1, false, fmt(drittel + vPK), '1/3 Nachlass: ' + fmt(drittel), vFehlt>0, vLabel(vFehlt>0)) +
-      card(nS2, false, fmt(drittel + vPK), '1/3 Nachlass: ' + fmt(drittel), vFehlt>0, vLabel(vFehlt>0));
+      rcHtml(nT,  true,  fmt(drittel + vPK), vDets(vFehlt > 0)) +
+      rcHtml(nS1, false, fmt(drittel + vPK), vDets(vFehlt > 0)) +
+      rcHtml(nS2, false, fmt(drittel + vPK), vDets(vFehlt > 0));
   } else {
     document.getElementById('pbSek').innerHTML =
-      '<div class="sec-pb"><div class="ttl">Pflichtteil an Preisbegünstigung (Ziff. 2.4) <span class="ta">greift</span></div>' +
-      step('Pflichtteil je Sohn (CHF 125\'000 × 1/4)', fmt(pJeSohn), 'Zahlung von ' + nT + ' direkt an Söhne — aus eigenen Mitteln, nicht aus dem Nachlass') +
+      '<div class="card-info"><div class="sec-label">Pflichtteil an Preisbegünstigung (Ziff. 2.4) <span class="badge bg-blue">greift</span></div>' +
+      stepHtml('Pflichtteil je Sohn (CHF\u202f125\'000 × ¼)', fmt(pJeSohn),
+        'Zahlung von ' + nT + ' direkt an Söhne — aus eigenen Mitteln, nicht aus dem Nachlass') +
       '</div>';
     document.getElementById('totalA').innerHTML =
-      card(nT,  true,  fmt(drittel + vPK - pBeide),  '1/3 Nachlass: ' + fmt(drittel), vFehlt>0, vLabel(vFehlt>0), './. Zahlung Söhne: ' + fmt(pBeide)) +
-      card(nS1, false, fmt(drittel + vPK + pJeSohn), '1/3 Nachlass: ' + fmt(drittel), vFehlt>0, vLabel(vFehlt>0), '+ Pflichtteil Preisbeg.: ' + fmt(pJeSohn)) +
-      card(nS2, false, fmt(drittel + vPK + pJeSohn), '1/3 Nachlass: ' + fmt(drittel), vFehlt>0, vLabel(vFehlt>0), '+ Pflichtteil Preisbeg.: ' + fmt(pJeSohn));
+      rcHtml(nT, true, fmt(drittel + vPK - pBeide),
+        [...vDets(vFehlt > 0), { t: './. Zahlung an Söhne: ' + fmt(pBeide) }]) +
+      rcHtml(nS1, false, fmt(drittel + vPK + pJeSohn),
+        [...vDets(vFehlt > 0), { t: '+ Pflichtteil Preisbeg.: ' + fmt(pJeSohn) }]) +
+      rcHtml(nS2, false, fmt(drittel + vPK + pJeSohn),
+        [...vDets(vFehlt > 0), { t: '+ Pflichtteil Preisbeg.: ' + fmt(pJeSohn) }]);
   }
 
   // Szenario B
   const vSöhne   = (verpfl / 3) * 2;
-  const nachBB   = brutto - beerd - schulden;
-  const vAusbezB = Math.min(vSöhne, Math.max(0, nachBB));
+  const vAusbezB = Math.min(vSöhne, Math.max(0, nachB));
   const vFehltB  = vSöhne - vAusbezB;
-  const reinerB  = nachBB - vSöhne;
+  const reinerB  = nachB - vSöhne;
   const haelfte  = Math.max(0, reinerB) / 2;
   const vJeSohnB = vAusbezB / 2;
   const vSollJSB = vSöhne / 2;
   const posB     = reinerB >= 0;
 
   document.getElementById('rechnungB').innerHTML =
-    '<p style="font-size:13px;color:var(--color-text-secondary);margin-bottom:12px;">' + nT +
+    '<p style="font-size:.8125rem;color:var(--muted);margin-bottom:.875rem;">' + nT +
     ' scheidet vollständig aus — keine Rechte, keine Pflichten. Verpflichtung nur noch ggü. zwei Söhnen (' + fmt(vSöhne) + ').</p>' +
-    step('Aktiven beim Tod', fmt(brutto)) +
-    step('./. Beerdigungskosten', '− ' + fmt(beerd)) +
-    step('./. Weitere Schulden', '− ' + fmt(schulden)) +
-    step('./. Verpflichtung ggü. 2 Söhnen (2/3 von ' + fmt(verpfl) + ')', '− ' + fmt(vSöhne),
+    stepHtml('Aktiven beim Tod', fmt(brutto)) +
+    stepHtml('./. Beerdigungskosten', '− ' + fmt(beerd)) +
+    stepHtml('./. Weitere Schulden', '− ' + fmt(schulden)) +
+    stepHtml('./. Verpflichtung ggü. 2 Söhnen (⅔ von ' + fmt(verpfl) + ')', '− ' + fmt(vSöhne),
       vFehltB > 0
         ? 'Nachlassmittel decken nur ' + fmt(vAusbezB) + ' — Fehlbetrag ' + fmt(vFehltB)
         : 'Je Sohn: ' + fmt(vJeSohnB)) +
-    '<hr class="div">' +
-    tr('Reiner Nachlass', fmt(reinerB), true) +
-    tr('Erbteil je Sohn (1/2)', fmt(haelfte)) +
-    (!posB ? '<div class="danger" style="margin-top:10px;">Nachlass verschuldet — Söhne können ihrerseits ausschlagen (Art. 566 ZGB).</div>' : '');
+    '<hr class="divider">' +
+    trHtml('Reiner Nachlass', fmt(reinerB), true) +
+    trHtml('Erbteil je Sohn (½)', fmt(haelfte)) +
+    (!posB ? '<div class="alert al-danger" style="margin-top:.75rem;">Nachlass verschuldet — Söhne können ihrerseits ausschlagen (Art. 566 ZGB).</div>' : '');
 
   document.getElementById('cardsB').innerHTML = [nS1, nS2].map(n =>
-    card(n, false, fmt(haelfte + vJeSohnB), '1/2 Nachlass: ' + fmt(haelfte),
-      vFehltB > 0,
-      '+ Verpflichtung' + (vFehltB > 0 ? ' (teilw.): ' + fmt(vJeSohnB) + ' von ' + fmt(vSollJSB) : ': ' + fmt(vJeSohnB)))
+    rcHtml(n, false, fmt(haelfte + vJeSohnB), [
+      { t: '½ Nachlass: ' + fmt(haelfte) },
+      { t: '+ Verpflichtung' + (vFehltB > 0 ? ' (teilw.): ' + fmt(vJeSohnB) + ' von ' + fmt(vSollJSB) : ': ' + fmt(vJeSohnB)), w: vFehltB > 0 }
+    ])
   ).join('');
 }
+
+/* ── Chart ── */
+let chartInst = null;
+
+function berechne(konto, beerd, schulden, verpfl, pos) {
+  const nachB    = konto - beerd - schulden;
+  const reiner   = nachB - verpfl;
+  const vAusbez  = Math.min(verpfl, Math.max(0, nachB));
+  const vPK      = vAusbez / 3;
+  const drittel  = Math.max(0, reiner) / 3;
+  const pJeSohn  = 31250;
+  const pBeide   = 62500;
+  const tochter  = pos ? drittel + vPK : drittel + vPK - pBeide;
+  const sohn     = pos ? drittel + vPK : drittel + vPK + pJeSohn;
+  return { tochter: Math.round(tochter), sohn: Math.round(sohn) };
+}
+
+function drawChart() {
+  const beerd    = +document.getElementById('g-beerd').value   || 0;
+  const schulden = +document.getElementById('g-schulden').value || 0;
+  const verpfl   = +document.getElementById('g-verpfl').value  || 0;
+  const maxK     = +document.getElementById('g-max').value     || 300000;
+
+  // Sprungpunkt: wenn nachB = verpfl → konto = beerd + schulden + verpfl
+  const sprung   = beerd + schulden + verpfl;
+
+  const step = Math.max(2500, Math.round(maxK / 120) * 500);
+  const labelsArr = [], tochterArr = [], sohnArr = [];
+
+  for (let k = 0; k <= sprung - step; k += step) {
+    labelsArr.push(k);
+    const r = berechne(k, beerd, schulden, verpfl, false);
+    tochterArr.push(r.tochter); sohnArr.push(r.sohn);
+  }
+  // Linker Rand
+  let r = berechne(sprung, beerd, schulden, verpfl, false);
+  labelsArr.push(sprung); tochterArr.push(r.tochter); sohnArr.push(r.sohn);
+  // NaN-Lücke
+  labelsArr.push(sprung); tochterArr.push(NaN); sohnArr.push(NaN);
+  // Rechter Rand
+  r = berechne(sprung, beerd, schulden, verpfl, true);
+  labelsArr.push(sprung); tochterArr.push(r.tochter); sohnArr.push(r.sohn);
+
+  for (let k = sprung + step; k <= maxK; k += step) {
+    labelsArr.push(k);
+    const r2 = berechne(k, beerd, schulden, verpfl, true);
+    tochterArr.push(r2.tochter); sohnArr.push(r2.sohn);
+  }
+
+  function fmtAxis(v) {
+    return (v < 0 ? '−' : '') + 'CHF\u202f' + (Math.abs(v)/1000).toFixed(0) + 'k';
+  }
+  function fmtTip(v) {
+    return (v < 0 ? '−\u202fCHF\u202f' : 'CHF\u202f') + Math.abs(Math.round(v)).toLocaleString('de-CH');
+  }
+
+  const rUnten = berechne(sprung, beerd, schulden, verpfl, false);
+  const rOben  = berechne(sprung, beerd, schulden, verpfl, true);
+
+  document.getElementById('chart-info').innerHTML =
+    'Sprungpunkt: CHF\u202f' + sprung.toLocaleString('de-CH') +
+    ' | Tochter springt von ' + fmtTip(rUnten.tochter) + ' auf ' + fmtTip(rOben.tochter) +
+    ' | Sohn springt von ' + fmtTip(rUnten.sohn) + ' auf ' + fmtTip(rOben.sohn);
+
+  if (chartInst) { chartInst.destroy(); chartInst = null; }
+
+  const sprungPlugin = {
+    id: 'sprungPlugin',
+    afterDraw(chart) {
+      const ctx   = chart.ctx;
+      const xAxis = chart.scales.x;
+      const yAxis = chart.scales.y;
+      const xPx   = xAxis.getPixelForValue(sprung);
+      const yTU   = yAxis.getPixelForValue(rUnten.tochter);
+      const yTO   = yAxis.getPixelForValue(rOben.tochter);
+      const ySU   = yAxis.getPixelForValue(rUnten.sohn);
+      const ySO   = yAxis.getPixelForValue(rOben.sohn);
+
+      ctx.save();
+      ctx.strokeStyle = '#D85A30';
+      ctx.lineWidth = 1.5;
+      ctx.setLineDash([5, 4]);
+      // Tochter Sprung
+      ctx.beginPath(); ctx.moveTo(xPx, yTU); ctx.lineTo(xPx, yTO); ctx.stroke();
+      // Sohn Sprung
+      ctx.beginPath(); ctx.moveTo(xPx, ySU); ctx.lineTo(xPx, ySO); ctx.stroke();
+      ctx.setLineDash([]);
+
+      // Label
+      const midY = Math.min(yTO, ySO) - 8;
+      ctx.fillStyle = '#D85A30';
+      ctx.font = '11px DM Sans, sans-serif';
+      ctx.textAlign = xPx > chart.chartArea.right - 100 ? 'right' : 'left';
+      ctx.fillText('CHF\u202f' + sprung.toLocaleString('de-CH'), xPx + (ctx.textAlign === 'left' ? 5 : -5), midY);
+
+      // Endpunkte
+      [[yTU,'#1D9E75'],[yTO,'#1D9E75'],[ySU,'#378ADD'],[ySO,'#378ADD']].forEach(([y,c]) => {
+        ctx.fillStyle = c;
+        ctx.beginPath(); ctx.arc(xPx, y, 4, 0, Math.PI*2); ctx.fill();
+      });
+      ctx.restore();
+    }
+  };
+
+  chartInst = new Chart(document.getElementById('myChart'), {
+    type: 'line',
+    data: {
+      labels: labelsArr,
+      datasets: [
+        { label: 'Tochter', data: tochterArr, borderColor: '#1D9E75', backgroundColor: 'transparent',
+          borderWidth: 2, pointRadius: 0, pointHoverRadius: 4, tension: 0, spanGaps: false },
+        { label: 'Sohn (je)', data: sohnArr, borderColor: '#378ADD', backgroundColor: 'transparent',
+          borderWidth: 2, borderDash: [6,3], pointRadius: 0, pointHoverRadius: 4, tension: 0, spanGaps: false }
+      ]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          callbacks: {
+            title: items => 'Kontostand: ' + fmtTip(items[0].parsed.x),
+            label: item => isNaN(item.parsed.y) ? '' : item.dataset.label + ': ' + fmtTip(item.parsed.y),
+          },
+          filter: item => !isNaN(item.parsed.y)
+        }
+      },
+      scales: {
+        x: {
+          type: 'linear', min: 0, max: maxK,
+          ticks: { stepSize: Math.round(maxK/6/50000)*50000 || 50000, callback: v => fmtAxis(v), font: { size: 11 }, color: '#A8A49C', maxRotation: 0, autoSkip: true },
+          grid: { color: 'rgba(0,0,0,0.05)' },
+          title: { display: true, text: 'Kontostand beim Tod', font: { size: 12 }, color: '#7A776E' }
+        },
+        y: {
+          ticks: { callback: v => fmtAxis(v), font: { size: 11 }, color: '#A8A49C' },
+          grid: {
+            color: ctx => ctx.tick.value === 0 ? 'rgba(0,0,0,0.2)' : 'rgba(0,0,0,0.05)',
+            lineWidth: ctx => ctx.tick.value === 0 ? 1.5 : 1
+          },
+          title: { display: true, text: 'Gesamtergebnis pro Kind', font: { size: 12 }, color: '#7A776E' }
+        }
+      }
+    },
+    plugins: [sprungPlugin]
+  });
+}
+
+// Init
 calc();
 </script>
+</body>
+</html>
