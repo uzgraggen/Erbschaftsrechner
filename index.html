@@ -193,6 +193,11 @@ footer{text-align:center;font-size:.72rem;color:var(--hint);padding:1.5rem 1rem;
     <div class="grid3" id="cardsTotal"></div>
   </div>
 
+  <div class="card" id="erklaerungCard" style="border-left:3px solid var(--accent);padding-left:1.25rem;">
+    <div class="sec-label">Zusammenfassung</div>
+    <div id="erklaerung" style="font-size:.875rem;line-height:1.8;color:var(--text);"></div>
+  </div>
+
 </div>
 
 <!-- ══ TAB GRAFIK ══ -->
@@ -408,6 +413,69 @@ function calc() {
   }
   document.getElementById('cardsTotal').innerHTML =
     tCard(nT,true,false,tAn)+tCard(nS1,false,true,s1An)+tCard(nS2,false,true,s2An);
+
+  // ── Zusammenfassung in Prosa ──
+  function erklaereKind(name, istT, istS, istAn) {
+    let betrag = (istAn?anteil:0)+vAusbezPK;
+    if (istT && showPB) betrag -= pTotal;
+    if (istS && showPB) betrag += pJeSohn;
+
+    let satz = '<strong>'+name+'</strong> ';
+
+    if (istAn) {
+      satz += 'nimmt das Erbe an und erhält insgesamt <strong>'+fmt(betrag)+'</strong>. ';
+      satz += 'Davon stammen <strong>'+fmt(anteil)+'</strong> aus dem Nachlass ('+anteilLbl+' des reinen Nachlasses von '+fmt(reiner)+') ';
+      if (vAusbezPK > 0) {
+        satz += 'und <strong>'+fmt(vAusbezPK)+'</strong> aus der Verpflichtung des Nachlasses der Mutter';
+        if (vFehlt > 0) satz += ' (von geschuldeten '+fmt(vPK)+'; Fehlbetrag '+fmt(fPK)+' mangels Nachlassmitteln)';
+        satz += '. ';
+      }
+      if (istT && showPB) satz += 'Da der Nachlass verschuldet ist, zahlt '+name+' den erbenden Söhnen je <strong>'+fmt(pJeSohn)+'</strong> als Pflichtteil an der Preisbegünstigung beim Hauskauf (CHF 125’000 × ¼, Testament Ziff. 2.4). ';
+      if (istS && showPB) satz += name+' erhält zusätzlich <strong>'+fmt(pJeSohn)+'</strong> von '+nT+' als Pflichtteil an der Preisbegünstigung (Testament Ziff. 2.4). ';
+    } else {
+      satz += 'schlägt das Erbe aus und erhält daher keinen Erbteil aus dem Nachlass. ';
+      if (vAusbezPK > 0) {
+        satz += 'Als eigenständige Forderung aus dem Nachlass der Mutter (Ehe- und Erbvertrag III.3) erhält '+name+' dennoch <strong>'+fmt(vAusbezPK)+'</strong>';
+        if (vFehlt > 0) satz += ' (von geschuldeten '+fmt(vPK)+'; Fehlbetrag '+fmt(fPK)+' mangels Nachlassmitteln)';
+        satz += '. Total: <strong>'+fmt(betrag)+'</strong>. ';
+      } else {
+        satz += 'Da keine Nachlassmittel vorhanden sind, erhält '+name+' auch aus der Verpflichtung der Mutter nichts. ';
+      }
+      if (istT) satz += 'Das Haus bleibt Eigentum von '+name+'. ';
+    }
+    return '<p style="margin-bottom:.75rem;">'+satz+'</p>';
+  }
+
+  let erkl = '';
+
+  if (n === 0) {
+    erkl = '<p>Alle drei Kinder haben das Erbe ausgeschlagen. Der Nachlass fällt an den Kanton (Art. 466 ZGB).</p>';
+  } else {
+    // Kontext
+    erkl += '<p style="margin-bottom:.75rem;color:var(--muted);font-size:.8125rem;">';
+    erkl += 'Kontostand beim Tod: <strong>'+fmt(brutto)+'</strong>. ';
+    erkl += 'Nach Abzug der Beerdigungskosten ('+fmt(beerd)+'), weiterer Schulden ('+fmt(schulden)+') ';
+    erkl += 'und der Verpflichtung gegenüber allen Kindern aus dem Nachlass der Mutter ('+fmt(vGes)+') ';
+    erkl += 'verbleibt ein reiner Nachlass von <strong>'+fmt(reiner)+'</strong>';
+    if (!pos) erkl += ' — der Nachlass ist verschuldet';
+    erkl += '.';
+    if (n < 3) erkl += ' '+erbenNamen.join(' und ')+' erb'+(n===1?'t':'en')+' den Nachlass ('+anteilLbl+' je Person).';
+    erkl += '</p>';
+
+    erkl += erklaereKind(nT,  true,  false, tAn);
+    erkl += erklaereKind(nS1, false, true,  s1An);
+    erkl += erklaereKind(nS2, false, true,  s2An);
+
+    if (vFehlt > 0) {
+      erkl += '<p style="margin-bottom:.75rem;color:var(--warn);font-size:.8125rem;">'+
+        'Hinweis: Die Verpflichtung aus dem Nachlass der Mutter ('+fmt(vGes)+') kann nur teilweise ('+fmt(vAusbez)+') ausbezahlt werden, '+
+        'da die verfügbaren Nachlassmittel nach Abzug der Beerdigungskosten und Schulden nicht ausreichen. '+
+        'Der Fehlbetrag von '+fmt(vFehlt)+' (je Kind '+fmt(fPK)+') bleibt offen.'+
+        '</p>';
+    }
+  }
+
+  document.getElementById('erklaerung').innerHTML = erkl;
 }
 
 /* ── Grafik ── */
