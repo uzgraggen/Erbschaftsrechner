@@ -131,7 +131,7 @@ footer{text-align:center;font-size:.72rem;color:var(--hint);padding:1.5rem 1rem;
     </div>
     <div class="field">
       <div class="field-lbl">Beerdigungskosten<small>Vorweg vom Nachlass (Art. 474 ZGB)</small></div>
-      <div class="field-inp"><span class="pfx">CHF</span><input type="number" id="beerdigung" value="20000" min="0" step="1000" oninput="calc()"></div>
+      <div class="field-inp"><span class="pfx">CHF</span><input type="number" id="beerdigung" value="0" min="0" step="1000" oninput="calc()"></div>
     </div>
     <div class="field">
       <div class="field-lbl">Weitere Schulden / Passiven<small>Steuern, ausstehende Rechnungen etc.</small></div>
@@ -139,7 +139,7 @@ footer{text-align:center;font-size:.72rem;color:var(--hint);padding:1.5rem 1rem;
     </div>
     <div class="field">
       <div class="field-lbl">Verpflichtung ggü. Kindern (Ziff. 2.4)<small>Nachlassschuld — wird voll abgezogen</small></div>
-      <div class="field-inp"><span class="pfx">CHF</span><input type="number" id="verpfl" value="127500" min="0" step="500" oninput="calc()"></div>
+      <div class="field-inp"><span class="pfx">CHF</span><input type="number" id="verpfl" value="127500" readonly style="opacity:.7;cursor:default;background:var(--surface2);"></div>
     </div>
   </div>
 
