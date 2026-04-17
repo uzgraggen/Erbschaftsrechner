@@ -292,7 +292,7 @@ function calc() {
   document.getElementById('g-verpfl').value   = verpfl;
 
   const tAn  = E.T==='an', s1An = E.S1==='an', s2An = E.S2==='an';
-  const n    = [tAn,s1An,s2An].filter(Boolean).length; // Anzahl erbende Kinder
+  const n    = [tAn,s1An,s2An].filter(Boolean).length;
   const anyAus = !tAn||!s1An||!s2An;
 
   // Frist-Warnung
@@ -305,7 +305,6 @@ function calc() {
       '<strong>Sofort Erbrechtsanwalt beiziehen — zeitkritisch.</strong></div>'
     : '';
 
-  // Namen der erbenden Kinder für Label
   const erbenNamen = [tAn?nT:null,s1An?nS1:null,s2An?nS2:null].filter(Boolean);
   document.getElementById('calcLabel').textContent =
     'Schritt 3 — Berechnung'+(n<3&&n>0?' ('+erbenNamen.join(', ')+' erben)':'');
@@ -313,20 +312,21 @@ function calc() {
   const brutto = konto+aktiven;
   const nachB  = brutto-beerd-schulden;
 
-  // Verpflichtung nur gegenüber erbenden Kindern
-  const vG       = n>0 ? (verpfl/3)*n : 0;      // Verpflichtung total an n Kinder
-  const vAusbez  = Math.min(vG, Math.max(0,nachB));
-  const vFehlt   = vG-vAusbez;
-  const vPK      = n>0 ? vAusbez/n : 0;          // Verpflichtung je Kind (ausbezahlt)
-  const vSollPK  = n>0 ? vG/n : 0;               // Verpflichtung je Kind (geschuldet)
-  const fPK      = n>0 ? vFehlt/n : 0;
+  // Verpflichtung CHF 127’500: eigenständige Schuld aus Nachlass der Mutter (Ehe- und Erbvertrag III.3)
+  // Geschuldet an ALLE 3 Kinder — unabhängig ob sie das Erbe des Vaters annehmen oder ausschlagen.
+  // Wird zuerst vollständig vom Nachlass abgezogen; der Rest wird unter den erbenden Kindern geteilt.
+  const vPK      = verpfl/3;                          // je Kind geschuldet (fix, z.B. 42’500)
+  const vGes     = verpfl;                             // total immer 127’500
+  const vAusbez  = Math.min(vGes, Math.max(0,nachB)); // soweit Mittel vorhanden
+  const vFehlt   = vGes-vAusbez;
+  const vAusbezPK= vAusbez/3;                         // je Kind tatsächlich ausbezahlt
+  const fPK      = vFehlt/3;                          // Fehlbetrag je Kind
 
-  const reiner   = nachB-vG;
+  const reiner   = nachB-vGes;
   const pos      = reiner>=0;
   const anteil   = n>0 ? Math.max(0,reiner)/n : 0;
   const anteilLbl= n===3?'⅓':n===2?'½':n===1?'1/1':'—';
 
-  // Berechnung
   if (n===0) {
     document.getElementById('rechnung').innerHTML =
       '<div class="alert al-danger">Alle drei Kinder haben ausgeschlagen — der Nachlass fällt an den Kanton (Art. 466 ZGB).</div>';
@@ -335,17 +335,16 @@ function calc() {
       S('Kontostand + weitere Aktiven', fmt(brutto))+
       S('./. Beerdigungskosten (Art. 474 ZGB)', '− '+fmt(beerd), 'Vorweg vom Nachlass getragen')+
       S('./. Weitere Schulden', '− '+fmt(schulden))+
-      S('./. Verpflichtung ggü. '+n+' erbenden Kind'+(n===1?'':'ern')+' (Ziff. 2.4)', '− '+fmt(vG),
+      S('./. Verpflichtung ggü. allen 3 Kindern (Ehe- und Erbvertrag III.3)', '− '+fmt(vGes),
         vFehlt>0
-          ? 'Nachlassmittel decken nur '+fmt(vAusbez)+' — Fehlbetrag '+fmt(vFehlt)
-          : 'Je Kind: '+fmt(vPK))+
+          ? 'Eigenständige Schuld aus Nachlass der Mutter — je Kind: '+fmt(vPK)+'. Nachlassmittel decken nur '+fmt(vAusbez)+' — Fehlbetrag: '+fmt(vFehlt)
+          : 'Eigenständige Schuld aus Nachlass der Mutter — je Kind: '+fmt(vPK)+' (auch bei Ausschlagung)')+
       '<hr class="divider">'+
-      TR('Reiner Nachlass', fmt(reiner), true)+
-      TR('Erbteil je Kind ('+anteilLbl+')', fmt(anteil))+
-      '<p class="threshold">Nachlass positiv wenn Aktiven &gt; '+fmt(beerd+schulden+vG)+'</p>';
+      TR('Reiner Nachlass (teilbar unter Erbenden)', fmt(reiner), true)+
+      TR('Erbteil je erbendes Kind ('+anteilLbl+')', fmt(anteil))+
+      '<p class="threshold">Nachlass positiv wenn Aktiven &gt; '+fmt(beerd+schulden+vGes)+'</p>';
   }
 
-  // Status
   const stEl = document.getElementById('statusBox');
   if (n===0) { stEl.innerHTML=''; }
   else if (pos) {
@@ -354,12 +353,11 @@ function calc() {
       '</div>';
   } else {
     stEl.innerHTML='<div class="alert al-warn">Nachlass verschuldet ('+fmt(reiner)+').'+
-      (tAn&&(s1An||s2An)?' Ziff. 2.4 zweiter Teil greift — '+nT+' zahlt erbenden Söhnen je CHF\u202f31\'250.':'')+
-      (vFehlt>0?' Verpflichtung nur teilweise ausbezahlbar ('+fmt(vAusbez)+' von '+fmt(vG)+').':'')+
+      (tAn&&(s1An||s2An)?' Ziff. 2.4 zweiter Teil greift — '+nT+' zahlt erbenden Söhnen je CHF 31’250.':'')+
+      (vFehlt>0?' Verpflichtung nur teilweise ausbezahlbar ('+fmt(vAusbez)+' von '+fmt(vGes)+').':'')+
       '</div>';
   }
 
-  // Pflichtteil Preisbegünstigung
   const pJeSohn = 31250;
   const erbendeSöhne = (s1An?1:0)+(s2An?1:0);
   const pTotal  = pJeSohn*erbendeSöhne;
@@ -370,7 +368,7 @@ function calc() {
   } else if (showPB) {
     document.getElementById('pbSek').innerHTML=
       '<div class="card-info"><div class="sec-label">Pflichtteil an Preisbegünstigung (Ziff. 2.4) <span class="badge bg-blue">greift</span></div>'+
-      S('Pflichtteil je erbender Sohn (CHF\u202f125\'000 × ¼)', fmt(pJeSohn),
+      S('Pflichtteil je erbender Sohn (CHF 125’000 × ¼)', fmt(pJeSohn),
         'Zahlung von '+nT+' direkt an Söhne — aus eigenen Mitteln, nicht aus dem Nachlass')+
       '</div>';
   } else {
@@ -382,33 +380,31 @@ function calc() {
       '<p style="font-size:.8125rem;color:var(--hint);">'+txt+'</p></div>';
   }
 
-  // Karten-Hilfsfunktionen
-  function vRows(w) {
-    return w
-      ? [{t:anteilLbl+' Nachlass: '+fmt(anteil)},{t:'+ Verpflichtung (teilw.): '+fmt(vPK)+' von '+fmt(vSollPK)+', Fehlbetrag '+fmt(fPK),w:true}]
-      : [{t:anteilLbl+' Nachlass: '+fmt(anteil)},{t:'+ Verpflichtung: '+fmt(vPK)}];
-  }
-  const ausRows = [{t:'Erbschaft ausgeschlagen'}];
-  const tBadge = '<span class="badge bg-green">Haus</span>';
+  const tBadge   = '<span class="badge bg-green">Haus</span>';
   const ausBadge = '<span class="badge bg-red">ausgeschlagen</span>';
 
-  // Ergebnis-Karten
+  function eRows(istAn) {
+    const vZeile = vFehlt>0
+      ? {t:'+ Verpflichtung Nachlass Mutter (teilw.): '+fmt(vAusbezPK)+' von '+fmt(vPK)+', Fehlbetrag '+fmt(fPK), w:true}
+      : {t:'+ Verpflichtung Nachlass Mutter: '+fmt(vAusbezPK)};
+    if (istAn) return [{t:anteilLbl+' Nachlass: '+fmt(anteil)}, vZeile];
+    return [{t:'Erbschaft ausgeschlagen'}, vZeile];
+  }
+
   function eCard(name, istT, istAn) {
-    return RC(name, istT?(istAn?tBadge:ausBadge):(!istAn?ausBadge:''),
-      istAn ? fmt(anteil+vPK) : '—',
-      istAn ? vRows(vFehlt>0) : ausRows, !istAn);
+    const badge = istT ? tBadge+(istAn?'':' '+ausBadge) : (istAn?'':ausBadge);
+    return RC(name, badge, fmt((istAn?anteil:0)+vAusbezPK), eRows(istAn), !istAn);
   }
   document.getElementById('cardsErgebnis').innerHTML =
     eCard(nT,true,tAn)+eCard(nS1,false,s1An)+eCard(nS2,false,s2An);
 
-  // Total-Karten
   function tCard(name, istT, istS, istAn) {
-    if (!istAn) return RC(name, istT?ausBadge:ausBadge, '—', ausRows, true);
-    let betrag = anteil+vPK;
-    const rows = [...vRows(vFehlt>0)];
+    let betrag = (istAn?anteil:0)+vAusbezPK;
+    const rows = [...eRows(istAn)];
     if (istT && showPB) { betrag-=pTotal; rows.push({t:'./. Zahlung an Söhne: '+fmt(pTotal)}); }
     if (istS && showPB) { betrag+=pJeSohn; rows.push({t:'+ Pflichtteil Preisbeg.: '+fmt(pJeSohn)}); }
-    return RC(name, istT?tBadge:'', fmt(betrag), rows, false);
+    const badge = istT ? tBadge+(istAn?'':' '+ausBadge) : (istAn?'':ausBadge);
+    return RC(name, badge, fmt(betrag), rows, !istAn);
   }
   document.getElementById('cardsTotal').innerHTML =
     tCard(nT,true,false,tAn)+tCard(nS1,false,true,s1An)+tCard(nS2,false,true,s2An);
